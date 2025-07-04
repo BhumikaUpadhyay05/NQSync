@@ -3,17 +3,21 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import os
-import json
 from threading import Lock
 
 app = Flask(__name__)
 
-# Store simulation configurations and results
-simulation_configs = {}
+# Thread-safe storage for simulation results
 simulation_results = {}
 results_lock = Lock()
 
+def safe_float(value, default):
+    try:
+        return float(value)
+    except:
+        return default
+
+# DPS QKD simulation function
 def simulate_dps_qkd(distance_km, fiber_type='underground',
                      mu=0.2, pulse_rate=1e9, det_eff=0.06,
                      dark_rate=800, dead_time=20e-6,
@@ -97,6 +101,33 @@ def simulate_dps_qkd(distance_km, fiber_type='underground',
         'num_comparable': num_comparable
     }
 
+@app.route("/remove-link", methods=["POST"])
+def remove_link():
+    try:
+        data = request.get_json()
+        from_node = data.get('from_node')
+        to_node = data.get('to_node')
+
+        with results_lock:
+            if from_node in simulation_results and to_node in simulation_results[from_node]:
+                del simulation_results[from_node][to_node]
+                if not simulation_results[from_node]:
+                    del simulation_results[from_node]
+                return jsonify({'success': True})
+            return jsonify({'success': False, 'error': 'Link not found'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route("/reset-all", methods=["POST"])
+def reset_all():
+    try:
+        with results_lock:
+            simulation_results.clear()
+        return jsonify({"success": True, "message": "All configurations cleared."})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
+
 @app.route("/")
 def home():
     return render_template("main_index.html")
@@ -116,7 +147,6 @@ def simulator_form():
     return render_template("simulator_form.html", from_node=from_node, to_node=to_node)
 
 @app.route("/save-simulation", methods=["POST"])
-@app.route("/save-simulation", methods=["POST"])
 def save_simulation():
     try:
         data = request.get_json()
@@ -124,45 +154,33 @@ def save_simulation():
                            'mu', 'pulse_rate', 'det_eff', 'dark_rate',
                            'dead_time', 'disclosure_rate', 'compression_ratio',
                            'visibility']
-        
+
         for field in required_fields:
             if field not in data:
                 return jsonify({'success': False, 'error': f'Missing field: {field}'})
-        
+
         from_node = data['from_node']
         to_node = data['to_node']
-        
-        # Prevent duplicate configuration
-        if from_node in simulation_results and to_node in simulation_results[from_node]:
-            return jsonify({'success': False, 'error': 'This connection is already configured.'})
 
-        # Convert safe floats
-        def safe_float(value, default):
-            try:
-                return float(value)
-            except:
-                return default
-
-        distance_km = safe_float(data.get('distance_km'), 50)
-        fiber_type = data.get('fiber_type', 'underground')
-        mu = safe_float(data.get('mu'), 0.2)
-        pulse_rate = safe_float(data.get('pulse_rate'), 1e9)
-        det_eff = safe_float(data.get('det_eff'), 0.06)
-        dark_rate = safe_float(data.get('dark_rate'), 800)
-        dead_time = safe_float(data.get('dead_time'), 20e-6)
-        disclosure_rate = safe_float(data.get('disclosure_rate'), 0.03125)
-        compression_ratio = safe_float(data.get('compression_ratio'), 0.5)
-        visibility = safe_float(data.get('visibility'), 0.98)
+        with results_lock:
+            if from_node in simulation_results and to_node in simulation_results[from_node]:
+                return jsonify({'success': False, 'error': 'This connection is already configured.'})
 
         result = simulate_dps_qkd(
-            distance_km, fiber_type, mu, pulse_rate, det_eff,
-            dark_rate, dead_time, disclosure_rate, compression_ratio, visibility
+            distance_km=safe_float(data.get('distance_km'), 50),
+            fiber_type=data.get('fiber_type', 'underground'),
+            mu=safe_float(data.get('mu'), 0.2),
+            pulse_rate=safe_float(data.get('pulse_rate'), 1e9),
+            det_eff=safe_float(data.get('det_eff'), 0.06),
+            dark_rate=safe_float(data.get('dark_rate'), 800),
+            dead_time=safe_float(data.get('dead_time'), 20e-6),
+            disclosure_rate=safe_float(data.get('disclosure_rate'), 0.03125),
+            compression_ratio=safe_float(data.get('compression_ratio'), 0.5),
+            visibility=safe_float(data.get('visibility'), 0.98)
         )
 
         with results_lock:
-            if from_node not in simulation_results:
-                simulation_results[from_node] = {}
-            simulation_results[from_node][to_node] = {
+            simulation_results.setdefault(from_node, {})[to_node] = {
                 'protocol': 'dps',
                 'configured': True,
                 'parameters': data,
@@ -178,56 +196,9 @@ def save_simulation():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
-        data = request.get_json()
-        
-        from_node = data.get('from_node')
-        to_node = data.get('to_node')
-        distance_km = safe_float(data.get('distance_km'), 50)
-        fiber_type = data.get('fiber_type', 'underground')
-        mu = safe_float(data.get('mu'), 0.2)
-        pulse_rate = safe_float(data.get('pulse_rate'), 1e9)
-        det_eff = safe_float(data.get('det_eff'), 0.06)
-        dark_rate = safe_float(data.get('dark_rate'), 800)
-        dead_time = safe_float(data.get('dead_time'), 20e-6)
-        disclosure_rate = safe_float(data.get('disclosure_rate'), 0.03125)
-        compression_ratio = safe_float(data.get('compression_ratio'), 0.5)
-        visibility = safe_float(data.get('visibility'), 0.98)
-
-        result = simulate_dps_qkd(
-            distance_km, fiber_type, mu, pulse_rate, det_eff,
-            dark_rate, dead_time, disclosure_rate, compression_ratio, visibility
-        )
-
-        # Store the result
-        with results_lock:
-            if from_node not in simulation_results:
-                simulation_results[from_node] = {}
-            simulation_results[from_node][to_node] = {
-                'protocol': 'dps',
-                'configured': True,
-                'result': result
-            }
-
-        return jsonify({'success': True, 'result': result})
-
 @app.route("/get-results")
 def get_results():
     return jsonify(simulation_results)
-
-@app.route("/combined-results")
-def combined_results():
-    # Process all results and prepare for display
-    combined = []
-    for from_node, connections in simulation_results.items():
-        for to_node, config in connections.items():
-            if config['configured']:
-                combined.append({
-                    'from': from_node,
-                    'to': to_node,
-                    'protocol': config['protocol'],
-                    'result': config['result']
-                })
-    return render_template("combined_results.html", results=combined)
 
 @app.route("/coming-soon")
 def coming_soon():
