@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quantum Key Distribution Protocol Selector</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        font-family: "Manrope", sans-serif;
+        height: 100%;
+      }
+
+      .container {
+        background: linear-gradient(135deg, #020024, #090979, #00d4ff);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        padding: 2rem;
+      }
+
+      .protocol-container {
+        text-align: center;
+        background: linear-gradient(
+          135deg,
+          rgba(2, 0, 36, 0.9),
+          rgba(9, 9, 121, 0.85)
+        );
+        backdrop-filter: blur(8px);
+        padding: 3rem;
+        border-radius: 2rem;
+        max-width: 800px;
+        width: 100%;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        color: #fff;
+        border: 1px solid rgba(0, 212, 255, 0.2);
+      }
+
+      h1 {
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+        color: #ffffff;
+        font-weight: 600;
+        position: relative;
+        padding-bottom: 1.2rem;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(90deg, #00d4ff, #00a8ff);
+        border-radius: 3px;
+      }
+
+      .protocol-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2.5rem;
+      }
+
+      .protocol-card {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 1rem;
+        padding: 2rem;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 212, 255, 0.15);
+        cursor: pointer;
+        text-align: center;
+      }
+
+      .protocol-card:hover {
+        transform: translateY(-5px);
+        background: rgba(0, 0, 0, 0.4);
+        box-shadow: 0 8px 25px rgba(0, 212, 255, 0.2);
+        border-color: rgba(0, 212, 255, 0.4);
+      }
+
+      .protocol-card h3 {
+        color: #ffffff;
+        margin-top: 0;
+        font-weight: 600;
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+      }
+
+      .protocol-card p {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1rem;
+        margin-bottom: 2rem;
+        line-height: 1.5;
+      }
+
+      .protocol-btn {
+        background: linear-gradient(135deg, #00d4ff, #00a8ff);
+        color: #020024;
+        border: none;
+        padding: 0.8rem 2rem;
+        border-radius: 50px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+        display: inline-block;
+        text-decoration: none;
+        box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+      }
+
+      .protocol-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+        background: linear-gradient(135deg, #00a8ff, #00d4ff);
+      }
+
+      .coming-soon {
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.8);
+        box-shadow: none;
+        cursor: not-allowed;
+      }
+
+      .coming-soon:hover {
+        transform: none;
+        box-shadow: none;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .centered-card {
+        grid-column: 1 / -1;
+        max-width: 350px;
+        margin: 0 auto;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 1.5rem;
+        }
+
+        .protocol-container {
+          padding: 2rem 1.5rem;
+        }
+
+        h1 {
+          font-size: 1.8rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .protocol-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .centered-card {
+          grid-column: auto;
+          margin: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="protocol-container">
+        <h1>Select QKD Protocol</h1>
+        <div class="protocol-grid">
+          <div class="protocol-card">
+            <h3>DPS QKD</h3>
+            <p>
+              Differential Phase Shift Quantum Key Distribution protocol
+              offering high key rates and robust security against eavesdropping.
+            </p>
+            <a href="{{ url_for('simulate') }}" class="protocol-btn">Select</a>
+          </div>
+
+          <div class="protocol-card">
+            <h3>BB84</h3>
+            <p>
+              The original quantum key distribution protocol using photon
+              polarization states for secure key exchange.
+            </p>
+            <button class="protocol-btn coming-soon">Coming Soon</button>
+          </div>
+
+          <div class="protocol-card centered-card">
+            <h3>COW</h3>
+            <p>
+              Coherent One-Way protocol with simple implementation and good
+              performance in metropolitan networks.
+            </p>
+            <button class="protocol-btn coming-soon">Coming Soon</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
