@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>COW QKD Simulation Form</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <style>
+      form {
+        max-width: 600px;
+        margin: 50px auto;
+        padding: 20px;
+        background: #f0f0f0;
+        border-radius: 10px;
+      }
+      h2,
+      label {
+        color: #2c2c2c;
+      }
+      label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+      button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #6a0f8c;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #d4017c;
+      }
+      .connection-info {
+        background: #e0e0e0;
+        color: #2c2c2c;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <form method="POST" action="{{ url_for('save_cow_simulation') }}">
+      <div class="connection-info">
+        <h3>Connection: System {{ from_node }} → System {{ to_node }}</h3>
+      </div>
+
+      <h2>COW QKD Simulation Parameters</h2>
+
+      <input type="hidden" name="from_node" value="{{ from_node }}" />
+      <input type="hidden" name="to_node" value="{{ to_node }}" />
+
+      <label for="distance_km">Fiber Length (km):</label>
+      <input
+        type="number"
+        step="any"
+        name="distance_km"
+        id="distance_km"
+        value="50"
+        required
+      />
+
+      <label for="fiber_type">Fiber Type:</label>
+      <select name="fiber_type" id="fiber_type" required>
+        <option value="underground">Underground</option>
+        <option value="aerial">Aerial</option>
+      </select>
+
+      <label for="mu">Mean Photons per Pulse (μ):</label>
+      <input type="number" step="any" name="mu" id="mu" value="0.1" required />
+
+      <label for="pulse_rate">Pulse Rate (Hz):</label>
+      <input
+        type="number"
+        step="any"
+        name="pulse_rate"
+        id="pulse_rate"
+        value="1e9"
+        required
+      />
+
+      <label for="det_eff">Detector Efficiency (η):</label>
+      <input
+        type="number"
+        step="any"
+        name="det_eff"
+        id="det_eff"
+        value="0.2"
+        required
+      />
+
+      <label for="dark_rate">Dark Count Rate (counts/sec):</label>
+      <input
+        type="number"
+        name="dark_rate"
+        id="dark_rate"
+        value="100"
+        required
+      />
+
+      <label for="dead_time">Dead Time (seconds):</label>
+      <input
+        type="number"
+        step="any"
+        name="dead_time"
+        id="dead_time"
+        value="0.00002"
+        required
+      />
+
+      <label for="error_correction_efficiency"
+        >Error Correction Efficiency (fraction):</label
+      >
+      <input
+        type="number"
+        step="any"
+        name="error_correction_efficiency"
+        id="error_correction_efficiency"
+        value="0.9"
+        required
+      />
+
+      <label for="visibility">Interference Visibility (0-1):</label>
+      <input
+        type="number"
+        step="any"
+        name="visibility"
+        id="visibility"
+        value="0.98"
+        required
+      />
+
+      <button type="submit">Save Configuration</button>
+    </form>
+
+    <script>
+      document
+        .querySelector("form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const formData = Object.fromEntries(new FormData(this));
+          formData.protocol = "cow"; // Add protocol type
+
+          try {
+            const response = await fetch(this.action, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              if (window.opener) {
+                window.opener.postMessage(
+                  {
+                    type: "simulation_saved",
+                    data: result.data,
+                  },
+                  "*"
+                );
+              }
+              window.close();
+            } else {
+              alert("Error: " + (result.error || "Unknown error"));
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("Error saving configuration: " + error.message);
+          }
+        });
+    </script>
+  </body>
+</html>

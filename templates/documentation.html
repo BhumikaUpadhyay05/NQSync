@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Documentation | NQSync</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      .doc-title {
+        font-size: 2.8rem;
+        margin-bottom: 1.5rem;
+        text-align: left;
+        color: #7f6fff;
+        font-weight: 500;
+      }
+
+      .doc-block {
+        margin-bottom: 3rem;
+      }
+
+      .doc-heading {
+        font-size: 1.6rem;
+        color: #ffffff;
+        margin-top: 2rem;
+        margin-bottom: 0.3rem;
+      }
+
+      .doc-block hr {
+        border: none;
+        height: 2px;
+        background-color: rgba(230, 234, 234, 0.4);
+        margin-bottom: 1rem;
+      }
+      .doc-intro {
+        text-align: left;
+        margin-bottom: 3rem;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #e0f7ff;
+        max-width: 100%;
+      }
+      .doc-img {
+        display: block;
+        margin: 1.5rem auto 1rem auto;
+        max-width: 45%;
+      }
+      .doc-img2 {
+        display: block;
+        margin: 1rem auto 1rem auto;
+        max-width: 30%;
+      }
+      .config-panel-section {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 2rem;
+        margin-top: 3rem;
+        margin-bottom: 3rem;
+      }
+
+      .config-text {
+        flex: 1 1 300px;
+      }
+
+      .config-image img {
+        max-width: 320px;
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+      .protocol-forms {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .protocol-forms img {
+        max-width: 100%;
+        height: auto;
+        width: 400px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+      }
+
+      .doc-block ul,
+      .doc-block ol {
+        padding-left: 1.5rem;
+        line-height: 1.7;
+      }
+
+      .doc-block p,
+      .doc-block li {
+        color: #e0f7ff;
+        font-size: 1rem;
+        line-height: 1.7;
+      }
+
+      .doc-block code {
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.95rem;
+        color: #ffea00;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Navbar -->
+      <header>
+        <div class="nav">
+          <div class="logo-text">NQSync</div>
+          <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            <div class="dropdown">
+              <a href="#" class="dropdown-toggle"
+                >Releases <i class="fas fa-caret-down"></i
+              ></a>
+              <div class="dropdown-menu">
+                <a href="{{ url_for('home') }}">Release 1.0</a>
+              </div>
+            </div>
+            <a href="{{ url_for('documentation') }}">Documentation</a>
+            <a href="#">Contact</a>
+          </nav>
+        </div>
+      </header>
+
+      <!-- Main Documentation Content -->
+      <main>
+        <div class="container">
+          <section class="doc-section">
+            <h1 class="doc-title">Documentation</h1>
+            <p class="doc-intro">
+              Welcome to the official documentation of <strong>NQSync</strong> —
+              your guide to simulating quantum-classical hybrid networks with
+              ease. This page will walk you through everything you need to get
+              started: from launching the simulator to configuring QKD protocols
+              like DPS and CoW. So, let’s dive in and begin building secure
+              quantum communication networks!
+            </p>
+
+            <div class="doc-block">
+              <h2 class="doc-heading">Where to Start</h2>
+              <hr />
+              <p>
+                The NQSync QKD simulator is a web-based simulation platform
+                designed for building and testing quantum key distribution (QKD)
+                networks. To begin, click the
+                <strong>“Launch Simulator”</strong> button which opens a canvas
+                interface.
+              </p>
+              <img
+                src="{{ url_for('static', filename='launchsim.png') }}"
+                alt="Launch Simulator Example"
+                class="doc-img"
+              />
+            </div>
+
+            <div class="doc-block">
+              <h2 class="doc-heading">Working with the Canvas</h2>
+              <hr />
+              <ul>
+                <li>
+                  <strong>Add Nodes</strong>: Create devices (systems/ports) on
+                  the canvas that can be connected with links and configured
+                  with QKD protocols.
+                </li>
+                <li>
+                  <strong>Simulate Network</strong>: Runs the simulation based
+                  on the current topology and configured links. Opens the
+                  results page showing metrics like QBER.
+                </li>
+                <li>
+                  <strong>Reset</strong>: Clear the canvas to start fresh.
+                </li>
+              </ul>
+              <img
+                src="{{ url_for('static', filename='toolbar.png') }}"
+                alt="Toolbar"
+                class="doc-img2"
+              />
+              <div class="config-panel-section">
+                <div class="config-text">
+                  <p>
+                    Double-click a node to open the configuration panel and
+                    create a link.
+                  </p>
+                  <ul>
+                    <li>
+                      <strong>Node Name</strong>: Name of the selected system.
+                    </li>
+                    <li>
+                      <strong>From</strong>: Auto-filled with the selected node.
+                    </li>
+                    <li>
+                      <strong>To</strong>: Choose the destination node to
+                      connect.
+                    </li>
+                    <li>
+                      <strong>Protocol</strong>: Choose between
+                      <strong>DPS QKD</strong>
+                      <span style="color: #00bcd4">(blue)</span> or
+                      <strong>CoW QKD</strong>
+                      <span style="color: #ffb300">(yellow)</span>.
+                    </li>
+                    <li>
+                      <strong>Cancel</strong>: Closes the panel without saving.
+                    </li>
+                    <li>
+                      <strong>Delete Node</strong>: Removes the selected node
+                      (only if not linked).
+                    </li>
+                    <li>
+                      <strong>Configure</strong>: Opens the parameter form and
+                      adds a link once configured.
+                    </li>
+                  </ul>
+                </div>
+                <div class="config-image">
+                  <img
+                    src="{{ url_for('static', filename='nodeconfig.png') }}"
+                    alt="Node configuration panel"
+                  />
+                </div>
+              </div>
+
+              <p>
+                When you click <strong>Configure</strong>, you’ll be directed to
+                one of the following forms depending on the selected
+                protocol—either <strong>DPS QKD</strong> or
+                <strong>COW QKD</strong>. These forms are pre-filled with
+                default values, which you can modify as needed.
+              </p>
+
+              <div class="protocol-forms">
+                <img
+                  src="{{ url_for('static', filename='DPSform.png') }}"
+                  alt="DPS QKD Form"
+                />
+                <img
+                  src="{{ url_for('static', filename='COWform.png') }}"
+                  alt="COW QKD Form"
+                />
+              </div>
+
+              <p>
+                Once you click <strong>Save Configuration</strong>, you’ll
+                return to the canvas where a colored link will appear between
+                your selected systems:
+                <span style="color: #00bcd4"><strong>blue</strong></span> for
+                DPS and
+                <span style="color: #ffb300"><strong>yellow</strong></span> for
+                CoW.
+              </p>
+              <p>
+                You can then click <strong>Simulate Network</strong> to view
+                performance metrics and results. To delete a link,
+                <strong>left + right click simultaneously</strong> on it and
+                confirm when prompted.
+              </p>
+
+              <div class="protocol-forms">
+                <img
+                  src="{{ url_for('static', filename='config.png') }}"
+                  alt="DPS QKD Form"
+                />
+                <img
+                  src="{{ url_for('static', filename='delete.png') }}"
+                  alt="COW QKD Form"
+                />
+              </div>
+            </div>
+
+            <div class="doc-block">
+              <h2 class="doc-heading">Available Protocol Parameters</h2>
+              <hr />
+
+              <ul>
+                <li><code>distance_km</code></li>
+                <li><code>fiber_type</code></li>
+                <li><code>mu</code></li>
+                <li><code>pulse_rate</code></li>
+                <li><code>det_eff</code></li>
+                <li><code>dark_rate</code></li>
+                <li><code>dead_time</code></li>
+                <li><code>error_correction_efficiency</code></li>
+                <li><code>base_error_interval</code></li>
+                <li><code>loss_error_slope</code></li>
+                <li><code>num_pulses</code></li>
+              </ul>
+            </div>
+
+            <div class="doc-block">
+              <h2 class="doc-heading">Supported Protocols</h2>
+              <hr />
+              <ol>
+                <li><strong>COW QKD Protocol</strong></li>
+                <li><strong>DPS QKD Protocol</strong></li>
+              </ol>
+            </div>
+
+            <div class="doc-block">
+              <h2 class="doc-heading">COW QKD Protocol</h2>
+              <hr />
+              <p>
+                This protocol uses one-way coherent pulses and simple detection
+                logic. Key calculations include:
+              </p>
+              <ul>
+                <li>
+                  <strong>Alpha</strong>: 0.20 (underground), 0.30 (aerial)
+                </li>
+                <li><strong>Loss</strong>: <code>alpha × distance</code></li>
+                <li>
+                  <strong>Transmittance</strong>:
+                  <code>10<sup>-loss/10</sup></code>
+                </li>
+                <li>
+                  Detection probability is derived from signal and dark count
+                  rates.
+                </li>
+                <li>
+                  QBER is calculated based on bit errors from non-decoy states.
+                </li>
+              </ul>
+            </div>
+
+            <div class="doc-block">
+              <h2 class="doc-heading">DPS QKD Protocol</h2>
+              <hr />
+              <p>
+                This protocol uses phase differences between consecutive pulses:
+              </p>
+              <ul>
+                <li>Keys are extracted based on detected phase differences.</li>
+                <li>
+                  QBER is the ratio of bit mismatches at comparable positions.
+                </li>
+                <li>
+                  Final key rate = sifted rate × (1 - disclosure_rate) × (1 -
+                  compression_ratio).
+                </li>
+              </ul>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="site-footer">
+        <div class="footer-grid">
+          <div class="footer-col">
+            <h3>NQSync</h3>
+            <ul>
+              <li><a href="#">Home</a></li>
+              <li><a href="#">About</a></li>
+              <li><a href="#">Mission</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>Resources</h3>
+            <ul>
+              <li><a href="#">Articles</a></li>
+              <li><a href="#">Tutorials</a></li>
+              <li><a href="#">FAQs</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>Contact</h3>
+            <ul>
+              <li><a href="#">Email</a></li>
+              <li><a href="#">LinkedIn</a></li>
+              <li><a href="#">GitHub</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>Join our newsletter</h3>
+            <form class="newsletter-form">
+              <input type="email" placeholder="Email Address" />
+              <button type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 NQSync. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
