@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>DPS QKD Simulation Results</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <style>
+      .results-container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 30px;
+        background: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        font-family: Arial, sans-serif;
+      }
+      h2 {
+        color: #2c2c2c;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .metric {
+        margin-bottom: 12px;
+        font-size: 17px;
+        color: #333;
+      }
+      .metric span {
+        font-weight: bold;
+        color: #6a0f8c;
+      }
+      .back-button {
+        display: block;
+        text-align: center;
+        margin-top: 30px;
+      }
+      .back-button a {
+        text-decoration: none;
+        background-color: #6a0f8c;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+      }
+      .back-button a:hover {
+        background-color: #d4017c;
+      }
+    </style>
+  </head>
+  <body>
+    {% if simulation_results %} {% for from_node, links in
+    simulation_results.items() %} {% for to_node, data in links.items() %} {%
+    set result = data.result %}
+    <div class="results-container">
+      <h2>
+        {{ data.protocol.upper() }} Simulation: {{ from_node }} → {{ to_node }}
+      </h2>
+
+      <div class="metric">
+        <span>Distance (km):</span> {{ result.distance_km }}
+      </div>
+      <div class="metric"><span>Fiber Type:</span> {{ result.fiber_type }}</div>
+      <div class="metric">
+        <span>Channel Loss (dB):</span> {{ result.loss_dB | round(2) }}
+      </div>
+      <div class="metric">
+        <span>Transmittance:</span> {{ "%.3e"|format(result.transmittance) }}
+      </div>
+      <div class="metric">
+        <span>Signal Probability per Pulse:</span> {{
+        "%.3e"|format(result.p_signal) }}
+      </div>
+      <div class="metric">
+        <span>Detection Probability:</span> {{
+        "%.3e"|format(result.detection_prob) }}
+      </div>
+      <div class="metric">
+        <span>QBER:</span> {{ (result.QBER * 100) | round(3) }}%
+      </div>
+      <div class="metric">
+        <span>Bit Errors:</span> {{ result.bit_errors if result.bit_errors is
+        not none else "N/A" }}
+      </div>
+      <div class="metric">
+        <span>Key Match Ratio:</span> {{ (result.key_match_ratio * 100) |
+        round(2) }}%
+      </div>
+      <div class="metric">
+        <span>Raw Key Rate (bps):</span> {{ result.raw_rate_bps | round(2) }}
+      </div>
+      <div class="metric">
+        <span>Sifted Key Rate (bps):</span> {{ result.sifted_key_rate | round(2)
+        }}
+      </div>
+      <div class="metric">
+        <span>Final Key Rate (bps):</span> {{ result.final_rate_bps | round(2)
+        }}
+      </div>
+      <div class="metric"><span>Visibility:</span> {{ result.visibility }}</div>
+      {% if result.len_alice_key is defined %}
+      <div class="metric">
+        <span>Raw Key Length (Alice):</span> {{ result.len_alice_key }}
+      </div>
+      {% endif %} {% if result.len_bob_key is defined %}
+      <div class="metric">
+        <span>Raw Key Length (Bob):</span> {{ result.len_bob_key }}
+      </div>
+      {% endif %}
+      <div class="metric">
+        <span>Number of Detections:</span> {{ result.num_detected }}
+      </div>
+      <div class="metric">
+        <span>Signal-based Detections:</span> {{ result.num_signal_detections }}
+      </div>
+      <div class="metric">
+        <span>Dark-only Detections:</span> {{ result.num_dark_counts }}
+      </div>
+      <div class="metric">
+        <span>Comparable Bits:</span> {{ result.num_comparable }}
+      </div>
+    </div>
+    {% endfor %} {% endfor %} {% else %}
+    <div class="results-container">
+      <h2>No Simulation Results Available</h2>
+    </div>
+    {% endif %}
+
+    <div class="back-button">
+      <a href="javascript:history.back()">Back to Canvas</a>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NQSync</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="nav">
+          <div class="logo-text">NQSync</div>
+          <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            <div class="dropdown">
+              <a href="#" class="dropdown-toggle"
+                >Releases <i class="fas fa-caret-down"></i
+              ></a>
+              <div class="dropdown-menu">
+                <a href="{{ url_for('home') }}">Release 1.0</a>
+              </div>
+            </div>
+            <a href="{{ url_for('documentation') }}">Documentation</a>
+            <a href="#">Contact</a>
+          </nav>
+        </div>
+      </header>
+
+      <main>
+        <div class="container">
+          <section class="intro">
+            <div class="intro-text">
+              <h1>
+                <img
+                  src="{{ url_for('static', filename='logo.png') }}"
+                  alt="NQSync Logo"
+                  class="title-logo"
+                />
+                NQSync
+              </h1>
+              <p class="tagline">
+                A Next-Gen Network Simulator with Quantum Edge
+              </p>
+              <p class="description">
+                NQSync is a web-based network simulator inspired by ns-3, built
+                with the future of quantum-classical hybrid networking in mind.
+                Create and test network topologies in real-time using an
+                intuitive drag-and-drop interface.
+              </p>
+              <div class="button-group">
+                <a href="{{ url_for('canvas') }}">
+                  <button class="launch-btn">Launch Simulator</button>
+                </a>
+                <a href="{{ url_for('coming_soon') }}">
+                  <button class="download-btn">Download</button>
+                </a>
+              </div>
+            </div>
+            <div class="intro-img">
+              <img
+                src="{{ url_for('static', filename='network.png') }}"
+                alt="Network Diagram"
+              />
+            </div>
+          </section>
+        </div>
+
+        <section class="features">
+          <h2>Features</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i class="fas fa-project-diagram feature-icon"></i>
+              <div class="feature-title">Visual Topology Builder</div>
+              <p>Drag nodes, connect links</p>
+            </div>
+            <div class="feature-card">
+              <i class="fas fa-atom feature-icon"></i>
+              <div class="feature-title">Quantum-Compatible</div>
+              <p>Includes protocols like CoW and DPS</p>
+            </div>
+            <div class="feature-card">
+              <i class="fas fa-chart-line feature-icon"></i>
+              <div class="feature-title">Real-Time Simulation</div>
+              <p>Detailed Simulation Metrics</p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="footer-grid">
+          <div class="footer-col">
+            <h3>NQSync</h3>
+            <ul>
+              <li><a href="{{ url_for('home') }}">Home</a></li>
+              <li><a href="#">About</a></li>
+              <li><a href="#">Mission</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>Resources</h3>
+            <ul>
+              <li><a href="#">Articles</a></li>
+              <li><a href="#">Tutorials</a></li>
+              <li><a href="#">FAQs</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>Contact</h3>
+            <ul>
+              <li><a href="#">Email</a></li>
+              <li><a href="#">LinkedIn</a></li>
+              <li><a href="#">GitHub</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>Join our newsletter</h3>
+            <form class="newsletter-form">
+              <input type="email" placeholder="Email Address" />
+              <button type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 NQSync. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

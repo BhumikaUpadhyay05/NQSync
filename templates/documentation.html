@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Documentation | NQSync</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    
+    <style>
+      .doc-title {
+        font-size: 2.8rem;
+        margin-bottom: 1.5rem;
+        text-align: left;
+        color: #7f6fff;
+        font-weight: 500;
+      }
+
+      .doc-block {
+        margin-bottom: 3rem;
+      }
+
+      .doc-heading {
+        font-size: 1.6rem;
+        color: #ffffff;
+        margin-top: 2rem;
+        margin-bottom: 0.3rem;
+      }
+
+      .doc-block hr {
+        border: none;
+        height: 2px;
+        background-color: rgba(230, 234, 234, 0.4);
+        margin-bottom: 1rem;
+      }
+      .doc-intro {
+        text-align: left;
+        margin-bottom: 3rem;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #e0f7ff;
+        max-width: 100%;
+      }
+      .doc-img {
+        display: block;
+        margin: 1.5rem auto 1rem auto;
+        max-width: 45%;
+      }
+      .doc-img2 {
+        display: block;
+        margin: 1rem auto 1rem auto;
+        max-width: 30%;
+      }
+      .config-panel-section {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 2rem;
+        margin-top: 3rem;
+        margin-bottom: 3rem;
+      }
+
+      .config-text {
+        flex: 1 1 300px;
+      }
+
+      .config-image img {
+        max-width: 320px;
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+      .protocol-forms {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .protocol-forms img {
+        max-width: 100%;
+        height: auto;
+        width: 400px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+      }
+
+      .doc-block ul,
+      .doc-block ol {
+        padding-left: 1.5rem;
+        line-height: 1.7;
+      }
+
+      .doc-block p,
+      .doc-block li {
+        color: #e0f7ff;
+        font-size: 1rem;
+        line-height: 1.7;
+      }
+
+      .doc-block code {
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.95rem;
+        color: #ffea00;
+      }
+/* Table of Contents Styling */
+.toc-list {
+
+  padding-left: 0;
+  margin-top: rem;
+  font-size: 1rem;
+}
+
+.toc-list li {
+  margin-bottom: 0.75rem;
+}
+
+.toc-list a {
+  text-decoration: none;
+  color: #e0f7ff;
+
+  display: inline-block;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.toc-list a:hover {
+
+  color: #ffea00;
+}
+
+.toc-list a:focus,
+.toc-list a:active {
+  background-color: #7f6fff;
+  color: #000;
+  outline: none;
+}
+
+
+</style>
+
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Navbar -->
+      <header>
+        <div class="nav">
+          <div class="logo-text">NQSync</div>
+          <nav>
+            <a href="{{ url_for('home') }}">Home</a>
+            <div class="dropdown">
+              <a href="#" class="dropdown-toggle"
+                >Releases <i class="fas fa-caret-down"></i
+              ></a>
+              <div class="dropdown-menu">
+                <a href="{{ url_for('home') }}">Release 1.0</a>
+              </div>
+            </div>
+            <a href="{{ url_for('documentation') }}">Documentation</a>
+            <a href="#">Contact</a>
+          </nav>
+        </div>
+      </header>
+
+      <!-- Main Documentation Content -->
+      <main>
+        <div class="container">
+          <section class="doc-section">
+            <h1 class="doc-title">Documentation</h1>
+            <p class="doc-intro">
+              Welcome to the official documentation of <strong>NQSync</strong> —
+              your guide to simulating quantum-classical hybrid networks with
+              ease. This page will walk you through everything you need to get
+              started: from launching the simulator to configuring QKD protocols
+              like DPS and CoW.
+            </p>
+            <div class="doc-block" id="toc">
+              <h2 class="doc-heading">Table of Contents</h2>
+              <hr />
+              <ul class="toc-list">
+                <li><a href="#start">Where to Start</a></li>
+                <li><a href="#canvas">Working with the Canvas</a></li>
+                <li><a href="#params">Available Protocol Parameters</a></li>
+                <li><a href="#protocols">Supported Protocols</a></li>
+                <li><a href="#results">Understanding Result Metrics</a></li>
+              </ul>
+            </div>
+
+            <div class="doc-block">
+              <h2 class="doc-heading" id="start">Where to Start</h2>
+              <hr />
+              <p>
+                The NQSync QKD simulator is a web-based simulation platform
+                designed for building and testing quantum key distribution (QKD)
+                networks. To begin, click the
+                <strong>“Launch Simulator”</strong> button which opens a canvas
+                interface.
+              </p>
+              <img
+                src="{{ url_for('static', filename='launchsim.png') }}"
+                alt="Launch Simulator Example"
+                class="doc-img"
+              />
+            </div>
+
+            <div class="doc-block">
+              <h2 class="doc-heading" id="canvas">Working with the Canvas</h2>
+              <hr />
+              <ul>
+                <li>
+                  <strong>Add Nodes</strong>: Create devices (systems/ports) on
+                  the canvas that can be connected with links and configured
+                  with QKD protocols.
+                </li>
+                <li>
+                  <strong>Simulate Network</strong>: Runs the simulation based
+                  on the current topology and configured links. Opens the
+                  results page showing metrics like QBER.
+                </li>
+                <li>
+                  <strong>Reset</strong>: Clear the canvas to start fresh.
+                </li>
+              </ul>
+              <img
+                src="{{ url_for('static', filename='toolbar.png') }}"
+                alt="Toolbar"
+                class="doc-img2"
+              />
+              <div class="config-panel-section">
+                <div class="config-text">
+                  <p>
+                    Double-click a node to open the configuration panel and
+                    create a link.
+                  </p>
+                  <ul>
+                    <li>
+                      <strong>Node Name</strong>: Name of the selected system.
+                    </li>
+                    <li>
+                      <strong>From</strong>: Auto-filled with the selected node.
+                    </li>
+                    <li>
+                      <strong>To</strong>: Choose the destination node to
+                      connect.
+                    </li>
+                    <li>
+                      <strong>Protocol</strong>: Choose between
+                      <strong>DPS QKD</strong>
+                     or
+                      <strong>CoW QKD</strong>.
+                    
+                    </li>
+                    <li>
+                      <strong>Cancel</strong>: Closes the panel without saving.
+                    </li>
+                    <li>
+                      <strong>Delete Node</strong>: Removes the selected node
+                      (only if not linked).
+                    </li>
+                    <li>
+                      <strong>Configure</strong>: Opens the parameter form and
+                      adds a link once configured.
+                    </li>
+                  </ul>
+                </div>
+                <div class="config-image">
+                  <img
+                    src="{{ url_for('static', filename='nodeconfig.png') }}"
+                    alt="Node configuration panel"
+                  />
+                </div>
+              </div>
+
+              <p>
+                When you click <strong>Configure</strong>, you will be directed
+                to one of the following forms depending on the selected
+                protocol—either <strong>DPS QKD</strong> or
+                <strong>COW QKD</strong>. These forms are pre-filled with
+                default values, which you can modify as needed.
+              </p>
+
+              <div class="protocol-forms">
+                <img
+                  src="{{ url_for('static', filename='DPSform.png') }}"
+                  alt="DPS QKD Form"
+                />
+                <img
+                  src="{{ url_for('static', filename='COWform.png') }}"
+                  alt="COW QKD Form"
+                />
+              </div>
+
+              <p>
+                Once you click <strong>Save Configuration</strong>, you’ll
+                return to the canvas where a colored link will appear between
+                your selected systems:
+                <span style="color: #00bcd4"><strong>blue</strong></span> for
+                DPS and
+                <span style="color: #ffb300"><strong>yellow</strong></span> for
+                CoW.
+              </p>
+              <p>
+                You can then click <strong>Simulate Network</strong> to view
+                performance metrics and results. To delete a link,
+                <strong>left + right click simultaneously</strong> on it and
+                confirm when prompted.
+              </p>
+
+              <div class="protocol-forms">
+                <img
+                  src="{{ url_for('static', filename='config.png') }}"
+                  alt="DPS QKD Form"
+                />
+                <img
+                  src="{{ url_for('static', filename='delete.png') }}"
+                  alt="COW QKD Form"
+                />
+              </div>
+            </div>
+
+            <div class="doc-block">
+              <h2 class="doc-heading" id="params">
+                Available Protocol Parameters
+              </h2>
+              <hr />
+
+              <h3>Common Parameters (DPS & CoW)</h3>
+              <ul>
+                <li>
+                  <code>distance_km</code> – Distance between two nodes (in
+                  kilometers) over which quantum key distribution is performed.
+                </li>
+                <li>
+                  <code>fiber_type</code> – Type of optical fiber used in the
+                  channel. Can be <code>"underground"</code> or
+                  <code>"aerial"</code>, affecting signal loss.
+                </li>
+                <li>
+                  <code>mu</code> – Mean photon number per pulse. Represents the
+                  average number of photons sent by Alice per pulse. Default is
+                  <code>0.2</code> for DPS and <code>0.1</code> for CoW.
+                </li>
+                <li>
+                  <code>pulse_rate</code> – Pulse repetition rate (in Hz) at
+                  which photons are sent by Alice.
+                </li>
+                <li>
+                  <code>det_eff</code> – Detector efficiency. Probability
+                  (between 0 and 1) that a photon is successfully detected.
+                </li>
+                <li>
+                  <code>dark_rate</code> – Dark count rate of the detector
+                  (counts per second). Represents false clicks due to noise or
+                  thermal effects.
+                </li>
+                <li>
+                  <code>dead_time</code> – Dead time of the detector (in
+                  seconds). It is the interval after each detection during which
+                  the detector is inactive and cannot record further events.
+                </li>
+                <li>
+                  <code>visibility</code> – Interference visibility, indicating
+                  the quality of phase coherence. Values closer to 1 imply ideal
+                  interference and lower error rates.
+                </li>
+                <li>
+                  <code>num_pulses</code> – Number of photon pulses sent by
+                  Alice during the simulation. Affects how statistically stable
+                  the results are.
+                </li>
+              </ul>
+
+              <h3>DPS QKD-Specific Parameters</h3>
+              <ul>
+                <li>
+                  <code>disclosure_rate</code> – The fraction of the raw key
+                  disclosed for QBER estimation. Higher values improve accuracy
+                  but reduce usable key length.
+                </li>
+                <li>
+                  <code>compression_ratio</code> – The factor with which the key
+                  is shortened during privacy amplification to remove leaked
+                  information.
+                </li>
+              </ul>
+
+              <h3>CoW QKD-Specific Parameters</h3>
+              <ul>
+                <li>
+                  <code>error_correction_efficiency</code> – Efficiency of the
+                  error correction algorithm used in post-processing. Typically
+                  between 0.9 and 1. Higher values preserve more of the key.
+                </li>
+              </ul>
+            </div>
+
+            <div class="doc-block">
+              <h2 class="doc-heading" id="protocols">Supported Protocols</h2>
+              <hr />
+              <ol>
+                <li><strong>CoW QKD Protocol</strong></li>
+                <li><strong>DPS QKD Protocol</strong></li>
+              </ol>
+            </div>
+
+            <div class="doc-block">
+              <h2 class="doc-heading">CoW QKD Protocol</h2>
+              <hr />
+              <p>
+                This protocol uses one-way coherent pulses and simple detection
+                logic. Key calculations include:
+              </p>
+              <ul>
+                <li>
+                  <strong>Alpha</strong>: 0.20 (underground), 0.30 (aerial)
+                </li>
+                <li><strong>Loss</strong>: <code>alpha × distance</code></li>
+                <li>
+                  <strong>Transmittance</strong>:
+                  <code>10<sup>-loss/10</sup></code>
+                </li>
+                <li>
+                  Detection probability is derived from signal and dark count
+                  rates.
+                </li>
+                <li>
+                  QBER is calculated based on bit errors from non-decoy states.
+                </li>
+              </ul>
+            </div>
+
+            <div class="doc-block">
+              <h2 class="doc-heading">DPS QKD Protocol</h2>
+              <hr />
+              <p>
+                This protocol uses phase differences between consecutive pulses:
+              </p>
+              <ul>
+                <li>Keys are extracted based on detected phase differences.</li>
+                <li>
+                  QBER is the ratio of bit mismatches at comparable positions.
+                </li>
+                <li>
+                  Final key rate = sifted rate × (1 - disclosure_rate) × (1 -
+                  compression_ratio).
+                </li>
+              </ul>
+            </div>
+            <div class="doc-block">
+              <h2 class="doc-heading" id="results">
+                Understanding Simulation Result Metrics
+              </h2>
+              <hr />
+       <ul>
+  <li>
+    <code style="color: #7f6fff">Distance_km</code> — Distance between sender(Alice) and receiver(Bob) in kilometers over the optical fiber.
+  </li>
+  <li>
+    <code style="color: #7f6fff">Fiber_Type</code> — <code>"underground"</code> or <code>"aerial"</code> fiber which affects attenuation (0.20 for underground and 0.30 dB/km for aerial).
+  </li>
+  <li>
+    <code style="color: #7f6fff">Channel_Loss_dB</code> — <code>loss_dB = α × distance</code> — Total loss of signal power over the fiber due to attenuation.
+  </li>
+  <li>
+    <code style="color: #7f6fff">Transmittance</code> — <code>T = 10<sup>-loss_dB / 10</sup></code> — Fraction of signal power that successfully passes through the fiber.
+  </li>
+  <li>
+    <code style="color: #7f6fff">Signal_Probability_per_Pulse</code> — <code>P<sub>signal</sub> = μ × T × η</code> — Probability that a signal photon sent by Alice is successfully detected by Bob.<br>
+    Where:<br>
+    &nbsp;&nbsp;<strong>μ</strong> = mean photon number per pulse<br>
+    &nbsp;&nbsp;<strong>T</strong> = transmittance<br>
+    &nbsp;&nbsp;<strong>η</strong> = detector efficiency
+  </li>
+  <li>
+    <code style="color: #7f6fff">Detection_Probability</code> — <code>P<sub>detect</sub> = P<sub>signal</sub> + (dark_rate / pulse_rate)</code> — Total probability that a pulse results in detection (including both signal and noise).
+  </li>
+  <li>
+    <code style="color: #7f6fff">QBER</code> — <code>QBER = bit_errors / comparable_bits</code> — Quantum Bit Error Rate, the fraction of incorrect bits shared between Alice and Bob.
+  </li>
+  <li>
+    <code style="color: #7f6fff">Bit_Errors</code> — Number of mismatched bits between Alice and Bob during key comparison.
+  </li>
+  <li>
+    <code style="color: #7f6fff">Key_Match_Ratio</code> — <code>1 - QBER</code> — Percent of matching bits in valid positions.
+  </li>
+  <li>
+    <code style="color: #7f6fff">Raw_Key_Rate_bps</code> — <code>R<sub>raw</sub> = (pulse_rate × P<sub>detect</sub>) / (1 + pulse_rate × P<sub>detect</sub> × dead_time)</code> — Initial bit rate of key generation based on detection probability.
+  </li>
+  <li>
+    <code style="color: #7f6fff">Sifted_Key_Rate_bps</code> — <code>R<sub>sifted</sub> = 0.5 × R<sub>raw</sub></code> — Rate of key bits retained after sifting.(~50% of raw key is usable.)
+  </li>
+    <li>
+    <code style="color: #7f6fff">Final_Key_Rate_bps</code> — 
+    <code>R<sub>final</sub> = R<sub>sifted</sub> × (1 - disclosure_rate) × (1 - compression_ratio)</code> — Usable key rate after error estimation and privacy amplification in <strong>DPS QKD</strong>.
+  <br>
+    <strong>Note for CoW QKD:</strong> The final key rate is calculated using a different formula:
+    
+    <code>R<sub>final</sub> = R<sub>sifted</sub> × (1 - error_correction_efficiency × QBER)</code>
+    <br>
+    This accounts for error correction efficiency instead of disclosure and compression rates.
+  </li>
+
+  <li>
+    <code style="color: #7f6fff">Visibility</code> — Depicts interference quality. Affects how accurately Bob can infer Alice’s bit from phase differences.
+  </li>
+  <li>
+    <code style="color: #7f6fff">Raw_Key_Length_Alice</code> — Total number of bits Alice attempted to encode and transmit.
+  </li>
+  <li>
+    <code style="color: #7f6fff">Raw_Key_Length_Bob</code> — Total number of bits detected and stored by Bob.
+  </li>
+  <li>
+    <code style="color: #7f6fff">Num_Detections</code> — Total detections, including both signal-based and dark counts.
+  </li>
+  <li>
+    <code style="color: #7f6fff">Signal_based_Detections</code> — Count of detections caused by actual signal photons.
+  </li>
+  <li>
+    <code style="color: #7f6fff">Dark_only_Detections</code> — Detections that occurred due to detector noise or false positives (not actual signal).
+  </li>
+  <li>
+    <code style="color: #7f6fff">Comparable_Bits</code> — Bits that are eligible for comparison between Alice and Bob to compute <code>QBER</code>.
+  </li>
+</ul>
+
+            </div>
+            <div class="doc-block">
+  <h2 class="doc-heading">Thanks for Exploring</h2>
+  <hr />
+  <p>
+     We hope this documentation has helped you get
+    started. For any questions or feedback, feel free to reach out through our
+    <a href="#contact">contact page</a>.
+  </p>
+</div>
+
+          </section>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="site-footer">
+        <div class="footer-grid">
+          <div class="footer-col">
+            <h3>NQSync</h3>
+            <ul>
+              <li><a href="{{ url_for('home') }}">Home</a></li>
+              <li><a href="#">About</a></li>
+              <li><a href="#">Mission</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>Resources</h3>
+            <ul>
+              <li><a href="#">Articles</a></li>
+              <li><a href="#">Tutorials</a></li>
+              <li><a href="#">FAQs</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>Contact</h3>
+            <ul>
+              <li><a href="#">Email</a></li>
+              <li><a href="#">LinkedIn</a></li>
+              <li><a href="#">GitHub</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>Join our newsletter</h3>
+            <form class="newsletter-form">
+              <input type="email" placeholder="Email Address" />
+              <button type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 NQSync. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

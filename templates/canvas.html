@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>NQSync Network Simulator</title>
+    <style>
+      :root {
+        --bg-color: #1a1a2e;
+        --toolbar-color: #16213e;
+        --node-bg: #0f3460;
+        --text-color: #e6e6e6;
+        --link-color: #4a4a4a;
+        --aerial-color: #ff6b6b;
+        --underground-color: #4ecdc4;
+        --highlight-color: #4cc9f0;
+        --dialog-bg: #2a2a3a;
+        --dialog-border: #3a3a4a;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        overflow: hidden;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+      }
+
+      .protocol-badge {
+        position: absolute;
+        top: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: white;
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-size: 10px;
+        font-weight: bold;
+        color: #333;
+        border: 1px solid #ccc;
+      }
+      #toolbar {
+        background: var(--toolbar-color);
+        color: white;
+        padding: 10px;
+        display: flex;
+        gap: 10px;
+        border-bottom: 1px solid #333;
+      }
+
+      #toolbar button {
+        background: var(--node-bg);
+        color: var(--text-color);
+        border: 1px solid #444;
+        border-radius: 4px;
+        padding: 5px 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      #toolbar button:hover {
+        background: #1a4b8c;
+      }
+
+      #canvas {
+        position: relative;
+        width: 100vw;
+        height: calc(100vh - 40px);
+        background: var(--bg-color);
+        overflow: hidden;
+      }
+
+      .node {
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        cursor: move;
+        background: var(--node-bg);
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        transition: all 0.1s;
+        z-index: 10;
+        user-select: none;
+        touch-action: none;
+      }
+
+      .node:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+      }
+
+      .node.selected {
+        border: 2px solid var(--highlight-color);
+      }
+
+      .node svg {
+        width: 40px;
+        height: 40px;
+        fill: var(--text-color);
+      }
+
+      .node-name {
+        margin-top: 5px;
+        font-size: 12px;
+        text-align: center;
+        color: var(--text-color);
+      }
+
+      .link {
+        position: absolute;
+        background: var(--link-color);
+        height: 6px;
+        transform-origin: left center;
+        z-index: 0;
+        pointer-events: auto;
+        transition: background 0.2s;
+      }
+
+      /* Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+
+      .modal-content {
+        background-color: var(--dialog-bg);
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid var(--dialog-border);
+        width: 400px;
+        border-radius: 8px;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--dialog-border);
+      }
+
+      .modal-title {
+        margin: 0;
+        font-size: 1.5em;
+      }
+
+      .close {
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .close:hover {
+        color: var(--text-color);
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+
+      .form-group select,
+      .form-group input {
+        width: 100%;
+        padding: 8px;
+        background: var(--bg-color);
+        border: 1px solid var(--dialog-border);
+        color: var(--text-color);
+        border-radius: 4px;
+      }
+
+      .btn {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      .btn-primary {
+        background: var(--highlight-color);
+        color: var(--text-color);
+      }
+
+      .btn-primary:hover {
+        opacity: 0.9;
+      }
+
+      .btn-secondary {
+        background: var(--node-bg);
+        color: var(--text-color);
+        margin-right: 10px;
+      }
+
+      .btn-secondary:hover {
+        background: #1a4b8c;
+      }
+
+      .btn-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+      }
+      .dps-link {
+        background: #00bcd4; 
+        height: 10px;
+      }
+
+      .bb84-link {
+        background: #e91e63; 
+        height: 10px;
+      }
+
+      .cow-link {
+        background: #ffb300; 
+        height: 10px;
+      }
+      .btn-danger {
+    background: #e74c3c;
+    color: white;
+    margin-right: 10px;
+  }
+  .btn-danger:hover {
+    background: #c0392b;
+  }
+    </style>
+  </head>
+  <body>
+    <div id="toolbar">
+      <button onclick="addNode('laptop')">Add Node</button>
+      <button onclick="simulateNetwork()">Simulate Network</button>
+      <button onclick="resetNetwork()">Reset</button>
+    </div>
+
+    <div id="canvas"></div>
+
+    <!-- Node Properties Modal -->
+    <div id="node-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Node Configuration</h3>
+          <span class="close" onclick="closeModal('node-modal')">&times;</span>
+        </div>
+
+        <div class="form-group">
+          <label>Node Name</label>
+          <input type="text" id="node-name" readonly />
+        </div>
+
+        <div class="form-group">
+          <label>From</label>
+          <select id="connection-from" disabled>
+            <option value="">Select source node</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>To</label>
+          <select id="connection-to">
+            <option value="">Select destination node</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Protocol</label>
+          <select id="protocol-type">
+            <option value="">Select protocol</option>
+            <option value="dps">DPS QKD</option>
+           <option value="cow">COW QKD</option>
+          </select>
+        </div>
+<div class="btn-container">
+  <button class="btn btn-secondary" onclick="closeModal('node-modal')">
+    Cancel
+  </button>
+  <button class="btn btn-danger" onclick="deleteCurrentNode()">
+    Delete Node
+  </button>
+  <button class="btn btn-primary" onclick="configureProtocol()">
+    Configure
+  </button>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+    <script>
+      // Global variables
+      const canvas = document.getElementById("canvas");
+      let nodes = [];
+      let links = [];
+      let nodeCounter = 1;
+      let currentNode = null;
+      let isDragging = false;
+
+      // SVG icons for nodes
+      const icons = {
+        laptop: `<svg viewBox="0 0 24 24">
+                <path d="M4 4h16v12H4z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                <path d="M2 18h20v2H2z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                <path d="M8 6h8v6H8z" stroke="currentColor" stroke-width="1" fill="none"/>
+            </svg>`,
+      };
+
+      // Add a new node to the canvas
+      function addNode(type) {
+        const node = document.createElement("div");
+        node.className = "node";
+        node.dataset.id = `node-${nodeCounter}`;
+        node.dataset.name = `System ${nodeCounter}`;
+        node.innerHTML = `
+                ${icons[type]}
+                <span class="node-name">System ${nodeCounter}</span>
+            `;
+
+        // Positioning randomly on canvas
+        node.style.left = `${Math.random() * (window.innerWidth - 100)}px`;
+        node.style.top = `${Math.random() * (window.innerHeight - 100)}px`;
+
+        // Add event listeners
+        node.addEventListener("click", handleNodeClick);
+        node.addEventListener("dblclick", showNodeProperties);
+
+        // Make draggable
+        setupDraggable(node);
+
+        // Add to canvas and nodes array
+        canvas.appendChild(node);
+        nodes.push(node);
+        nodeCounter++;
+      }
+
+      // Make nodes draggable
+      function setupDraggable(node) {
+        let posX = 0,
+          posY = 0;
+
+        interact(node).draggable({
+          listeners: {
+            start(event) {
+              isDragging = true;
+              posX = parseFloat(node.getAttribute("data-x")) || 0;
+              posY = parseFloat(node.getAttribute("data-y")) || 0;
+            },
+            move(event) {
+              posX += event.dx;
+              posY += event.dy;
+
+              node.style.transform = `translate(${posX}px, ${posY}px)`;
+              node.setAttribute("data-x", posX);
+              node.setAttribute("data-y", posY);
+              updateLinks();
+            },
+            end(event) {
+              isDragging = false;
+            },
+          },
+        });
+      }
+      function updateLinks() {
+        links.forEach((link) => {
+          const fromNode = nodes.find(
+            (n) => n.dataset.id === link.dataset.from
+          );
+          const toNode = nodes.find((n) => n.dataset.id === link.dataset.to);
+
+          if (!fromNode || !toNode) return;
+
+          const fromRect = fromNode.getBoundingClientRect();
+          const toRect = toNode.getBoundingClientRect();
+          const canvasRect = canvas.getBoundingClientRect();
+
+          // Getting center coordinates of both nodes relative to canvas
+          const fromX = fromRect.left + fromRect.width / 2 - canvasRect.left;
+          const fromY = fromRect.top + fromRect.height / 2 - canvasRect.top;
+          const toX = toRect.left + toRect.width / 2 - canvasRect.left;
+          const toY = toRect.top + toRect.height / 2 - canvasRect.top;
+
+          const dx = toX - fromX;
+          const dy = toY - fromY;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
+
+          link.style.width = `${distance}px`;
+          link.style.left = `${fromX}px`;
+          link.style.top = `${fromY}px`;
+          link.style.transform = `rotate(${angle}deg)`;
+        });
+      }
+
+      // Handle node click
+      function handleNodeClick(event) {
+        if (isDragging) return;
+        event.stopPropagation();
+
+        // Toggle selection
+        nodes.forEach((n) => n.classList.remove("selected"));
+        this.classList.add("selected");
+      }
+
+      // Show node properties modal
+      function showNodeProperties(event) {
+        event.stopPropagation();
+        currentNode = this;
+
+        // Set node name
+        document.getElementById("node-name").value = this.dataset.name;
+
+        // Set 'From' dropdown (current node)
+        const fromSelect = document.getElementById("connection-from");
+        fromSelect.innerHTML = `<option value="${this.dataset.id}">${this.dataset.name}</option>`;
+
+        // Populate 'To' dropdown with other nodes
+        const toSelect = document.getElementById("connection-to");
+        toSelect.innerHTML =
+          '<option value="">Select destination node</option>';
+
+        nodes.forEach((node) => {
+          if (node !== currentNode) {
+            const fromId = currentNode.dataset.id;
+            const toId = node.dataset.id;
+            const isAlreadyConnected = links.some(
+              (l) =>
+                (l.dataset.from === fromId && l.dataset.to === toId) ||
+                (l.dataset.from === toId && l.dataset.to === fromId)
+            );
+
+            if (!isAlreadyConnected) {
+              toSelect.innerHTML += `<option value="${toId}">${node.dataset.name}</option>`;
+            }
+          }
+        });
+
+        // Show modal
+        document.getElementById("node-modal").style.display = "block";
+      }
+
+      // Configure protocol for selected connection
+      function configureProtocol() {
+        const toNodeId = document.getElementById("connection-to").value;
+        const protocolType = document.getElementById("protocol-type").value;
+
+        if (!toNodeId || !protocolType) {
+          alert("Please select both destination node and protocol");
+          return;
+        }
+
+        if (protocolType === "dps") {
+          // Open DPS QKD simulator form
+          window.open(
+            `/simulator-form?from=${currentNode.dataset.id}&to=${toNodeId}`,
+            "_blank"
+          );
+        }
+
+           if (protocolType === "cow") {
+          // Open CoW QKD simulator form
+          window.open(
+            `/cow-form?from=${currentNode.dataset.id}&to=${toNodeId}`,
+            "_blank"
+          );
+        }
+
+        closeModal("node-modal");
+      }
+
+      // Close modal
+      function closeModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+      }
+
+      //  create/update links
+      function updateConnection(fromId, toId, protocolType) {
+        const fromNode = nodes.find((n) => n.dataset.id === fromId);
+        const toNode = nodes.find((n) => n.dataset.id === toId);
+
+        if (!fromNode || !toNode) return;
+
+        // Prevent duplicate link
+        const existingLink = links.find(
+          (link) =>
+            (link.dataset.from === fromId && link.dataset.to === toId) ||
+            (link.dataset.from === toId && link.dataset.to === fromId)
+        );
+        if (existingLink) return;
+
+        // Create link div
+        const link = document.createElement("div");
+        link.className = "link";
+        link.dataset.from = fromId;
+        link.dataset.to = toId;
+        link.dataset.protocol = protocolType;
+
+       if (protocolType === "dps") {
+  link.classList.add("dps-link");
+} else if (protocolType === "bb84") {
+  link.classList.add("bb84-link");
+} else if (protocolType === "cow") {
+  link.classList.add("cow-link");
+}
+
+
+
+        // Handle right-click to delete link
+        link.addEventListener("contextmenu", function (e) {
+          e.preventDefault();
+          const confirmDelete = confirm("Do you want to delete this link?");
+          if (confirmDelete) {
+            // Remove from DOM
+            link.remove();
+
+            // Remove from links array
+            links = links.filter(
+              (l) =>
+                !(
+                  (l.dataset.from === fromId && l.dataset.to === toId) ||
+                  (l.dataset.from === toId && l.dataset.to === fromId)
+                )
+            );
+
+            // Optional: Notify backend
+            fetch("/remove-link", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ from_node: fromId, to_node: toId }),
+            });
+          }
+        });
+
+        canvas.appendChild(link);
+        links.push(link);
+
+        // Add protocol badge
+        const badge = document.createElement("div");
+        badge.className = "protocol-badge";
+        badge.innerText = protocolType.toUpperCase();
+        link.appendChild(badge);
+
+        // Position link visually between nodes
+        positionLinkBetween(fromNode, toNode, link);
+
+        // Flash animation
+        fromNode.classList.add("connected");
+        toNode.classList.add("connected");
+        setTimeout(() => {
+          fromNode.classList.remove("connected");
+          toNode.classList.remove("connected");
+        }, 1000);
+      }
+     function positionLinkBetween(fromNode, toNode, link) {
+  const canvasRect = canvas.getBoundingClientRect();
+  const rect1 = fromNode.getBoundingClientRect();
+  const rect2 = toNode.getBoundingClientRect();
+
+  const x1 = rect1.left + rect1.width / 2 - canvasRect.left;
+  const y1 = rect1.top + rect1.height / 2 - canvasRect.top;
+  const x2 = rect2.left + rect2.width / 2 - canvasRect.left;
+  const y2 = rect2.top + rect2.height / 2 - canvasRect.top;
+
+  const length = Math.hypot(x2 - x1, y2 - y1);
+  const angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
+
+  link.style.width = `${length}px`;
+  link.style.transform = `rotate(${angle}deg)`;
+  link.style.left = `${x1}px`;
+  link.style.top = `${y1}px`;
+}
+
+
+      // Reset network
+      function resetNetwork() {
+        if (confirm("Are you sure you want to reset the network?")) {
+          canvas.innerHTML = "";
+          nodes = [];
+          links = [];
+          nodeCounter = 1;
+        }
+      }
+      function simulateNetwork() {
+       window.location.href = "/results";
+
+      }
+
+      // Listen for simulation saved messages
+      window.addEventListener("message", function (event) {
+        if (event.data.type === "simulation_saved") {
+          const { from_node, to_node, protocol } = event.data.data;
+          updateConnection(from_node, to_node, protocol);
+
+          // Visual confirmation
+          const fromNode = nodes.find((n) => n.dataset.id === from_node);
+          const toNode = nodes.find((n) => n.dataset.id === to_node);
+
+          if (fromNode && toNode) {
+            fromNode.classList.add("connected");
+            toNode.classList.add("connected");
+            setTimeout(() => {
+              fromNode.classList.remove("connected");
+              toNode.classList.remove("connected");
+            }, 1000);
+          }
+        }
+      });
+      function resetNetwork() {
+        if (confirm("Are you sure you want to reset the network?")) {
+          canvas.innerHTML = "";
+          nodes = [];
+          links = [];
+          nodeCounter = 1;
+
+          // Notify backend to clear simulation data
+          fetch("/reset-all", {
+            method: "POST",
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (!data.success) {
+                alert("Error resetting configuration on server: " + data.error);
+              }
+            })
+            .catch((err) => {
+              alert("Network error while resetting: " + err);
+            });
+        }
+      }
+      function deleteCurrentNode() {
+  if (!currentNode) return;
+
+  const nodeId = currentNode.dataset.id;
+
+  // Check if the node has links
+  const isLinked = links.some(
+    (link) => link.dataset.from === nodeId || link.dataset.to === nodeId
+  );
+
+  if (isLinked) {
+    alert("Cannot delete this node — it's linked to another node. Please remove the link first.");
+    return;
+  }
+
+  // Remove node from DOM and memory
+  currentNode.remove();
+  nodes = nodes.filter((n) => n !== currentNode);
+
+  // Hide modal
+  closeModal("node-modal");
+}
+if (protocolType === "cow") {
+  window.open(
+    `/cow-form?from=${currentNode.dataset.id}&to=${toNodeId}`,
+    "_blank"
+  );
+}
+
+    </script>
+  </body>
+</html>
