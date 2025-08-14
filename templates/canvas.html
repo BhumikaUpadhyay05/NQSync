@@ -2,244 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styless.css') }}">
+
     <title>NQSync Network Simulator</title>
-    <style>
-      :root {
-        --bg-color: #1a1a2e;
-        --toolbar-color: #16213e;
-        --node-bg: #0f3460;
-        --text-color: #e6e6e6;
-        --link-color: #4a4a4a;
-        --aerial-color: #ff6b6b;
-        --underground-color: #4ecdc4;
-        --highlight-color: #4cc9f0;
-        --dialog-bg: #2a2a3a;
-        --dialog-border: #3a3a4a;
-      }
-
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        overflow: hidden;
-        background-color: var(--bg-color);
-        color: var(--text-color);
-      }
-
-      .protocol-badge {
-        position: absolute;
-        top: -15px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: white;
-        padding: 2px 6px;
-        border-radius: 10px;
-        font-size: 10px;
-        font-weight: bold;
-        color: #333;
-        border: 1px solid #ccc;
-      }
-      #toolbar {
-        background: var(--toolbar-color);
-        color: white;
-        padding: 10px;
-        display: flex;
-        gap: 10px;
-        border-bottom: 1px solid #333;
-      }
-
-      #toolbar button {
-        background: var(--node-bg);
-        color: var(--text-color);
-        border: 1px solid #444;
-        border-radius: 4px;
-        padding: 5px 10px;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-
-      #toolbar button:hover {
-        background: #1a4b8c;
-      }
-
-      #canvas {
-        position: relative;
-        width: 100vw;
-        height: calc(100vh - 40px);
-        background: var(--bg-color);
-        overflow: hidden;
-      }
-
-      .node {
-        position: absolute;
-        width: 80px;
-        height: 80px;
-        cursor: move;
-        background: var(--node-bg);
-        border-radius: 8px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-        transition: all 0.1s;
-        z-index: 10;
-        user-select: none;
-        touch-action: none;
-      }
-
-      .node:hover {
-        transform: scale(1.05);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-      }
-
-      .node.selected {
-        border: 2px solid var(--highlight-color);
-      }
-
-      .node svg {
-        width: 40px;
-        height: 40px;
-        fill: var(--text-color);
-      }
-
-      .node-name {
-        margin-top: 5px;
-        font-size: 12px;
-        text-align: center;
-        color: var(--text-color);
-      }
-
-      .link {
-        position: absolute;
-        background: var(--link-color);
-        height: 6px;
-        transform-origin: left center;
-        z-index: 0;
-        pointer-events: auto;
-        transition: background 0.2s;
-      }
-
-      /* Modal Styles */
-      .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.4);
-      }
-
-      .modal-content {
-        background-color: var(--dialog-bg);
-        margin: 10% auto;
-        padding: 20px;
-        border: 1px solid var(--dialog-border);
-        width: 400px;
-        border-radius: 8px;
-      }
-
-      .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid var(--dialog-border);
-      }
-
-      .modal-title {
-        margin: 0;
-        font-size: 1.5em;
-      }
-
-      .close {
-        color: #aaa;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-      }
-
-      .close:hover {
-        color: var(--text-color);
-      }
-
-      .form-group {
-        margin-bottom: 15px;
-      }
-
-      .form-group label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-      }
-
-      .form-group select,
-      .form-group input {
-        width: 100%;
-        padding: 8px;
-        background: var(--bg-color);
-        border: 1px solid var(--dialog-border);
-        color: var(--text-color);
-        border-radius: 4px;
-      }
-
-      .btn {
-        padding: 8px 15px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: bold;
-      }
-
-      .btn-primary {
-        background: var(--highlight-color);
-        color: var(--text-color);
-      }
-
-      .btn-primary:hover {
-        opacity: 0.9;
-      }
-
-      .btn-secondary {
-        background: var(--node-bg);
-        color: var(--text-color);
-        margin-right: 10px;
-      }
-
-      .btn-secondary:hover {
-        background: #1a4b8c;
-      }
-
-      .btn-container {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 20px;
-      }
-      .dps-link {
-        background: #00bcd4; 
-        height: 10px;
-      }
-
-      .bb84-link {
-        background: #e91e63; 
-        height: 10px;
-      }
-
-      .cow-link {
-        background: #ffb300; 
-        height: 10px;
-      }
-      .btn-danger {
-    background: #e74c3c;
-    color: white;
-    margin-right: 10px;
-  }
-  .btn-danger:hover {
-    background: #c0392b;
-  }
-    </style>
+   
   </head>
   <body>
     <div id="toolbar">
@@ -372,37 +138,17 @@
           },
         });
       }
-      function updateLinks() {
-        links.forEach((link) => {
-          const fromNode = nodes.find(
-            (n) => n.dataset.id === link.dataset.from
-          );
-          const toNode = nodes.find((n) => n.dataset.id === link.dataset.to);
+     function updateLinks() {
+  links.forEach((link) => {
+    const fromNode = nodes.find(n => n.dataset.id === link.dataset.from);
+    const toNode = nodes.find(n => n.dataset.id === link.dataset.to);
+    if (!fromNode || !toNode) return;
 
-          if (!fromNode || !toNode) return;
+    // Use the correct logic that includes offset & arrow
+    positionLinkBetween(fromNode, toNode, link);
+  });
+}
 
-          const fromRect = fromNode.getBoundingClientRect();
-          const toRect = toNode.getBoundingClientRect();
-          const canvasRect = canvas.getBoundingClientRect();
-
-          // Getting center coordinates of both nodes relative to canvas
-          const fromX = fromRect.left + fromRect.width / 2 - canvasRect.left;
-          const fromY = fromRect.top + fromRect.height / 2 - canvasRect.top;
-          const toX = toRect.left + toRect.width / 2 - canvasRect.left;
-          const toY = toRect.top + toRect.height / 2 - canvasRect.top;
-
-          const dx = toX - fromX;
-          const dy = toY - fromY;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
-
-          link.style.width = `${distance}px`;
-          link.style.left = `${fromX}px`;
-          link.style.top = `${fromY}px`;
-          link.style.transform = `rotate(${angle}deg)`;
-        });
-      }
 
       // Handle node click
       function handleNodeClick(event) {
@@ -464,7 +210,7 @@
         if (protocolType === "dps") {
           // Open DPS QKD simulator form
           window.open(
-            `/simulator-form?from=${currentNode.dataset.id}&to=${toNodeId}`,
+            `/dps-form?from=${currentNode.dataset.id}&to=${toNodeId}`,
             "_blank"
           );
         }
@@ -509,9 +255,8 @@
 
        if (protocolType === "dps") {
   link.classList.add("dps-link");
-} else if (protocolType === "bb84") {
-  link.classList.add("bb84-link");
-} else if (protocolType === "cow") {
+} 
+else if (protocolType === "cow") {
   link.classList.add("cow-link");
 }
 
@@ -563,35 +308,10 @@
           toNode.classList.remove("connected");
         }, 1000);
       }
-     function positionLinkBetween(fromNode, toNode, link) {
-  const canvasRect = canvas.getBoundingClientRect();
-  const rect1 = fromNode.getBoundingClientRect();
-  const rect2 = toNode.getBoundingClientRect();
-
-  const x1 = rect1.left + rect1.width / 2 - canvasRect.left;
-  const y1 = rect1.top + rect1.height / 2 - canvasRect.top;
-  const x2 = rect2.left + rect2.width / 2 - canvasRect.left;
-  const y2 = rect2.top + rect2.height / 2 - canvasRect.top;
-
-  const length = Math.hypot(x2 - x1, y2 - y1);
-  const angle = Math.atan2(y2 - y1, x2 - x1) * (180 / Math.PI);
-
-  link.style.width = `${length}px`;
-  link.style.transform = `rotate(${angle}deg)`;
-  link.style.left = `${x1}px`;
-  link.style.top = `${y1}px`;
-}
+   
 
 
-      // Reset network
-      function resetNetwork() {
-        if (confirm("Are you sure you want to reset the network?")) {
-          canvas.innerHTML = "";
-          nodes = [];
-          links = [];
-          nodeCounter = 1;
-        }
-      }
+    
       function simulateNetwork() {
        window.location.href = "/results";
 
@@ -617,6 +337,8 @@
           }
         }
       });
+
+      //Reset Network
       function resetNetwork() {
         if (confirm("Are you sure you want to reset the network?")) {
           canvas.innerHTML = "";
@@ -639,6 +361,44 @@
             });
         }
       }
+
+
+      function positionLinkBetween(fromNode, toNode, link) {
+  const canvasRect = canvas.getBoundingClientRect();
+  const rect1 = fromNode.getBoundingClientRect();
+  const rect2 = toNode.getBoundingClientRect();
+
+  const x1 = rect1.left + rect1.width / 2 - canvasRect.left;
+  const y1 = rect1.top + rect1.height / 2 - canvasRect.top;
+  const x2 = rect2.left + rect2.width / 2 - canvasRect.left;
+  const y2 = rect2.top + rect2.height / 2 - canvasRect.top;
+
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const angle = Math.atan2(dy, dx);
+  const distance = Math.hypot(dx, dy);
+
+  const nodeRadius = 40; // Approx. node radius
+  const arrowOffset = 20; // Additional buffer to show arrow outside
+  const adjustedLength = distance - nodeRadius - arrowOffset;
+
+  link.style.width = `${adjustedLength}px`;
+  link.style.left = `${x1}px`;
+  link.style.top = `${y1}px`;
+  link.style.transform = `rotate(${angle * (180 / Math.PI)}deg)`;
+
+  // Add or update arrowhead
+  let arrow = link.querySelector(".arrowhead");
+  if (!arrow) {
+    arrow = document.createElement("div");
+    arrow.className = "arrowhead";
+    link.appendChild(arrow);
+  }
+
+ arrow.style.transform = `translateY(-50%)`;
+
+}
+
       function deleteCurrentNode() {
   if (!currentNode) return;
 
@@ -661,12 +421,7 @@
   // Hide modal
   closeModal("node-modal");
 }
-if (protocolType === "cow") {
-  window.open(
-    `/cow-form?from=${currentNode.dataset.id}&to=${toNodeId}`,
-    "_blank"
-  );
-}
+
 
     </script>
   </body>

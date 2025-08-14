@@ -275,19 +275,16 @@ def reset_all():
 def home():
     return render_template("main_index.html")
 
-@app.route("/select-protocol")
-def select_protocol():
-    return render_template("protocol_select.html")
 
 @app.route("/canvas")
 def canvas():
     return render_template("canvas.html")
 
-@app.route("/simulator-form", methods=["GET"])
+@app.route("/dps-form", methods=["GET"])
 def simulator_form():
     from_node = request.args.get('from')
     to_node = request.args.get('to')
-    return render_template("simulator_form.html", from_node=from_node, to_node=to_node)
+    return render_template("dps_form.html", from_node=from_node, to_node=to_node)
 
 @app.route("/save-simulation", methods=["POST"])
 def save_simulation():
@@ -345,7 +342,7 @@ def get_results():
 
 @app.route("/coming-soon")
 def coming_soon():
-    return render_template("coming_soon_landing.html")
+    return render_template("coming_soon.html")
 @app.route("/results")
 def results():
     with results_lock:
