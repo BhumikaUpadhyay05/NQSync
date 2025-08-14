@@ -1,0 +1,72 @@
+.md-header__button.md-logo img {
+  height: 50px !important;
+  border-radius: 10px;
+}
+
+/* Section Headings - h2 */
+h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #7e56c2;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 6px;
+  margin-top: 2rem;
+}
+
+/* Subsection Headings - h3 */
+h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #3f51b5;
+  margin-top: 1.5rem;
+}
+
+/* Deeper Subsection - h4 */
+h4 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #9c27b0;
+  margin-top: 1rem;
+}
+
+/* Sidebar Navigation Styling */
+.md-nav__list {
+  list-style-type: disc !important;
+  padding-left: 1.2em !important;
+}
+
+.md-nav__item {
+  margin-left: 0.5em;
+}
+
+.md-nav__item .md-nav__link {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.md-nav__item--nested {
+  padding-left: 10px;
+}
+
+/* Typography Consistency */
+.md-typeset h2 {
+  font-weight: 700;
+}
+
+.md-typeset h1,
+.md-typeset h2 {
+  font-weight: 700 !important;
+  color: var(--md-primary-fg-color) !important;
+}
+
+/* Sidebar Separator */
+.md-sidebar--primary {
+  border-right: 0.5px solid #e0e0e0;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.md-sidebar {
+  padding-right: 10px;
+}

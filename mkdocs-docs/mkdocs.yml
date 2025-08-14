@@ -1,5 +1,6 @@
 site_name: NQSync Documentation
-site_url: https://yourdomain.com/docs
+site_url: /documentation/
+
 repo_url: https://github.com/BhumikaUpadhyay05/NQSync
 
 theme:
